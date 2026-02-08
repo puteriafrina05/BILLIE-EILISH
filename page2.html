@@ -69,22 +69,25 @@
             overflow: hidden; 
             border-radius: 20px;
         }
-<div id="formSection" class="hidden max-w-lg mx-auto glass p-8 rounded-2xl text-left mb-20">
-            <h3 class="text-xl font-bold mb-6 border-b border-white/20 pb-2">BILLING DETAILS</h3>
-            <div id="cartSummary" class="mb-6 text-sky-400 font-bold uppercase text-xs"></div>
-            <div class="space-y-4">
-                <input type="text" id="name" placeholder="Full Name">
-                <input type="text" id="phone" placeholder="Phone Number">
-                <select id="bank">
-                    <option value="">-- Select Bank --</option>
-                    <option>Maybank</option>
-                    <option>CIMB Bank</option>
-                    <option>Public Bank</option>
-                    <option>RHB Bank</option>
-                    <option>Bank Islam</option>
-                </select>
-                <button onclick="donebooking()" class="bg-sky-500 w-full py-3 rounded-xl font-bold uppercase tracking-widest transition hover:bg-sky-400 shadow-lg shadow-sky-500/20">Complete Purchase</button>
-            </div>
+function processPayment() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const method = document.getElementById('pay-method').value;
+            if(!name || !phone || !method) return alert("Please fill all details.");
+
+            document.getElementById('billing-screen').classList.add('hidden');
+            document.getElementById('ticket-ui').classList.remove('hidden');
+            document.getElementById('order-id').innerText = "Order: #BE-" + Math.random().toString(36).substr(2,9).toUpperCase();
+            
+            const ticketContainer = document.getElementById('ticket-container');
+            ticketContainer.innerHTML = '';
+            cart.forEach(s => {
+                ticketContainer.innerHTML += `<div class="concert-ticket"><div class="ticket-data-overlay">
+                    <div class="data-item"><div class="label">Zone</div><div class="value">${s.zone}</div></div>
+                    <div class="data-item"><div class="label">Row</div><div class="value">${s.r}</div></div>
+                    <div class="data-item"><div class="label">Seat</div><div class="value">${s.c}</div></div>
+                </div></div>`;
+            });
         .concert-ticket {
             width: 100%;
             max-width: 900px;
@@ -358,5 +361,6 @@
 </body>
 
 </html>
+
 
 
