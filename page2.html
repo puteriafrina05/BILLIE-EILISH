@@ -69,26 +69,52 @@
             overflow: hidden; 
             border-radius: 20px;
         }
-function processPayment() {
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const method = document.getElementById('pay-method').value;
-            if(!name || !phone || !method) return alert("Please fill all details.");
+// GANTIKAN fungsi checkout asal dengan ini
+function checkout() {
+    if(cart.length === 0) return alert("Your cart is empty!");
+    
+    // Alihkan ke skrin isi maklumat (Billing Screen)
+    document.getElementById('selection-screen').classList.add('hidden');
+    document.getElementById('billing-screen').classList.remove('hidden');
+    window.scrollTo(0,0);
+}
 
-            document.getElementById('billing-screen').classList.add('hidden');
-            document.getElementById('ticket-ui').classList.remove('hidden');
-            document.getElementById('order-id').innerText = "Order: #BE-" + Math.random().toString(36).substr(2,9).toUpperCase();
-            
-            const ticketContainer = document.getElementById('ticket-container');
-            ticketContainer.innerHTML = '';
-            cart.forEach(s => {
-                ticketContainer.innerHTML += `<div class="concert-ticket"><div class="ticket-data-overlay">
+// GANTIKAN fungsi processPayment asal dengan ini
+function processPayment() {
+    const name = document.getElementById('cust-name').value;
+    const phone = document.getElementById('cust-phone').value;
+    const method = document.getElementById('pay-method').value;
+
+    if(!name || !phone) return alert("Please fill all details.");
+
+    // Sembunyikan skrin billing dan tunjuk skrin tiket
+    document.getElementById('billing-screen').classList.add('hidden');
+    document.getElementById('ticket-ui').classList.remove('hidden');
+    
+    // Isi butiran pada resit/slip jika perlu (Optional: Untuk ID rName, rPhone dsb)
+    if(document.getElementById('rName')) document.getElementById('rName').innerText = name;
+    if(document.getElementById('rPhone')) document.getElementById('rPhone').innerText = phone;
+    if(document.getElementById('rBank')) document.getElementById('rBank').innerText = method;
+
+    const orderId = "BE-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+    document.getElementById('order-id').innerText = "Order Reference: #" + orderId;
+    
+    const ticketContainer = document.getElementById('ticket-container');
+    ticketContainer.innerHTML = '';
+    
+    cart.forEach(s => {
+        ticketContainer.innerHTML += `
+            <div class="concert-ticket">
+                <div class="ticket-data-overlay">
+                    <div class="data-item"><div class="label">Gate</div><div class="value">12</div></div>
                     <div class="data-item"><div class="label">Zone</div><div class="value">${s.zone}</div></div>
                     <div class="data-item"><div class="label">Row</div><div class="value">${s.r}</div></div>
                     <div class="data-item"><div class="label">Seat</div><div class="value">${s.c}</div></div>
-                </div></div>`;
-            });
-        .concert-ticket {
+                </div>
+            </div>`;
+    });
+    window.scrollTo(0,0);
+}
             width: 100%;
             max-width: 900px;
             height: 315px;
@@ -192,6 +218,30 @@ function processPayment() {
             </div>
         </div>
     </section>
+    <section id="billing-screen" class="hidden py-10 px-6 max-w-2xl mx-auto no-print">
+    <div class="glass rounded-[40px] p-10 border-sky-500/30">
+        <h3 class="text-3xl font-black italic mb-8 text-center text-sky-400">CUSTOMER DETAILS</h3>
+        <div class="space-y-6">
+            <div>
+                <label class="block text-[10px] uppercase font-bold mb-2 tracking-widest opacity-60">Full Name</label>
+                <input type="text" id="cust-name" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition">
+            </div>
+            <div>
+                <label class="block text-[10px] uppercase font-bold mb-2 tracking-widest opacity-60">Phone Number</label>
+                <input type="tel" id="cust-phone" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition">
+            </div>
+            <div>
+                <label class="block text-[10px] uppercase font-bold mb-2 tracking-widest opacity-60">Payment Method</label>
+                <select id="pay-method" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition appearance-none">
+                    <option class="bg-slate-900">Maybank2u</option>
+                    <option class="bg-slate-900">CIMB Clicks</option>
+                    <option class="bg-slate-900">Touch 'n Go eWallet</option>
+                </select>
+            </div>
+            <button onclick="processPayment()" class="w-full bg-sky-500 hover:bg-sky-400 py-5 rounded-2xl font-black uppercase text-xs tracking-[0.3em] mt-4 transition-all shadow-lg shadow-sky-500/20">Confirm & Generate Ticket</button>
+        </div>
+    </div>
+</section>
  <div id="receipt" class="hidden max-w-2xl mx-auto my-10 p-10 glass rounded-3xl border-2 border-sky-500">
         <h1 class="text-3xl font-black italic text-center mb-4">OFFICIAL RECEIPT</h1>
         <p class="text-center text-xs tracking-widest opacity-70 mb-8 uppercase">Billie Eilish World Tour Ticket</p>
@@ -361,6 +411,7 @@ function processPayment() {
 </body>
 
 </html>
+
 
 
 
